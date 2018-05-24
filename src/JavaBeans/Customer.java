@@ -1,5 +1,6 @@
 package JavaBeans;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Customer {
@@ -22,9 +23,14 @@ public class Customer {
 		this.id = id;
 		this.custName = custName;
 		this.password = password;
+		this.coupons = new ArrayList<>();
 	}
 
 	
+	public Customer() {
+		this.coupons = new ArrayList<>();
+	}
+
 	@Override
 	public String toString() 
 	{
@@ -68,7 +74,7 @@ public class Customer {
 		return coupons;
 	}
 
-	public void setCoupons(Collection<Coupon> coupons) {
+	public void setCoupons(ArrayList<Coupon> coupons) {
 		this.coupons = coupons;
 	}
 	

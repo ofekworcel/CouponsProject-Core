@@ -1,5 +1,6 @@
 package JavaBeans;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Company {
@@ -9,9 +10,15 @@ public class Company {
 	private String compName;
 	private String password;
 	private String email;
-	Collection<Coupon> coupons;
+	private Collection<Coupon> coupons;
 
 	
+	public Company() {
+		this.coupons = new ArrayList<>();
+	}
+
+
+
 	//Without adding a coupon collection.
 	public Company(long id, String compName, String password, String email) 
 	{
@@ -19,7 +26,7 @@ public class Company {
 		this.compName = compName;
 		this.password = password;
 		this.email = email;
-		
+		this.coupons = new ArrayList<>();
 	}
 	
 	
@@ -87,7 +94,7 @@ public class Company {
 		return coupons;
 	}
 
-	public void setCoupons(Collection<Coupon> coupons) {
+	public void setCoupons(ArrayList<Coupon> coupons) {
 		this.coupons = coupons;
 	}
 	

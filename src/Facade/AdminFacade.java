@@ -14,238 +14,175 @@ import Utilities.MyException;
 
 public class AdminFacade implements CouponClientFacade {
 
-	//The class for SQL Statements
-	Statement st = null; 
-	//the table results from the SQL server
+	// The class for SQL Statements
+	Statement st = null;
+	// the table results from the SQL server
 	ResultSet rs = null;
 	static boolean isLoggedIn = false;
-	//Creating management instances for each bean.
+	// Creating management instances for each bean.
 	CompanyDBDAO companyData = new CompanyDBDAO();
 	CouponDBDAO couponData = new CouponDBDAO();
 	CustomerDBDAO customerData = new CustomerDBDAO();
-	
+
 	@Override
-	public void login(String name, String password, ClientType type) {
-		
-		try 
-		{
-			if (name == "admin" && password == "admin1234") 
-			{
-				isLoggedIn = true;
-			}
-			else
-			{
-				throw new MyException("Username or password is incorrect.");
-			}
+	public CouponClientFacade login(String name, String password, ClientType type) {
+
+		if (name == "admin" && password == "1234") {
+			isLoggedIn = true;
+			return this;
 		}
-		catch(MyException e)
-		{
-			e.printStackTrace();
-		}
+		return null;
+
 	}
 
-	public void addCompany(Company myCOMPany)
-	{ 
-		try
-		{
-			if (isLoggedIn) 
-			{
-				if(companyData.getCompany(myCOMPany.getId()) != null)
-				{
+	public void addCompany(Company myCOMPany) {
+		try {
+			if (isLoggedIn) {
+				if (companyData.getCompany(myCOMPany.getId()) != null) {
 					System.out.println("Company already exists...");
 					return;
 				}
 				companyData.addCompany(myCOMPany);
-			}
-			else 
-			{
+			} else {
 				System.out.println("User not logged in...");
 			}
-		}
-		catch (MyException e) 
-		{
+		} catch (MyException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void removeCompany(long  id)
-	{
-		if (!isLoggedIn) 
-		{
+	public void removeCompany(long id) {
+		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
-		try
-		{
+		try {
 			ArrayList<Coupon> tempCoupons = (ArrayList<Coupon>) companyData.getCoupons(id);
-		
-			for (int i = 0; i < tempCoupons.size(); i++) 
-			{
+
+			for (int i = 0; i < tempCoupons.size(); i++) {
 				companyData.deleteCompany(tempCoupons.get(i).getId());
 			}
-		
+
 			companyData.deleteCompany(id);
-		}
-		catch (MyException e) 
-		{
+		} catch (MyException e) {
 			e.printStackTrace();
 		}
-	}	
+	}
 
-	public void updateCompany(long id)
-	{
-		if (!isLoggedIn) 
-		{
+	public void updateCompany(Company company) {
+		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
-		try 
-		{
-			companyData.updateCompany(id);
-		}
-		catch(MyException e)
-		{
+		try {
+			companyData.updateCompany(company);
+		} catch (MyException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
-	public Company getCompany(long id)
-	{
-		if (!isLoggedIn) 
-		{
+	public Company getCompany(long id) {
+		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		Company companyToReturn = null;
-		try 
-		{
+		try {
 			companyToReturn = companyData.getCompany(id);
-		}
-		catch(MyException e)
-		{
+		} catch (MyException e) {
 			e.printStackTrace();
 		}
 		return companyToReturn;
 	}
-	
-	public ArrayList<Company> getAllCompanies()
-	{
-		if (!isLoggedIn) 
-		{
+
+	public ArrayList<Company> getAllCompanies() {
+		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		ArrayList<Company> companyListToReturn = null;
 		try {
 			companyListToReturn = companyData.getAllCompanys();
-		}
-		catch(MyException e)
-		{
+		} catch (MyException e) {
 			e.printStackTrace();
 		}
 		return companyListToReturn;
 	}
-	
-	public void addCustomer(Customer customer)
-	{
-		if (!isLoggedIn) 
-		{
+
+	public void addCustomer(Customer customer) {
+		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
-		try 
-		{
-			if(customerData.getCustomer(customer.getId()) != null)
-			{
+		try {
+			if (customerData.getCustomer(customer.getId()) != null) {
 				System.out.println("Customer already exists...");
 				return;
-			} 
+			}
 			customerData.addCustomer(customer);
-		}
-		catch(MyException e)
-		{
+		} catch (MyException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void deleteCustomer(long id)
-	{	
-		if (!isLoggedIn) 
-		{
+	public void deleteCustomer(long id) {
+		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
-		
+
 		try {
 			ArrayList<Coupon> tempCoupons = (ArrayList<Coupon>) customerData.getCoupons(id);
-			
-			for (int i = 0; i < tempCoupons.size(); i++) 
-			{
+
+			for (int i = 0; i < tempCoupons.size(); i++) {
 				couponData.deleteCoupon(tempCoupons.get(i).getId());
 			}
 			customerData.deleteCustomer(id);
-		}
-		catch(MyException e)
-		{
-			e.printStackTrace();
-		}
-	}	
-	
-	public void updateCustomer(long id)
-	{
-		if (!isLoggedIn) 
-		{
-			System.out.println("Not logged in, returning...");
-			return;
-		}
-		
-		try 
-		{
-			customerData.updateCustomer(id);
-		} 
-		catch (MyException e) 
-		{
+		} catch (MyException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public Customer getCustomer(long id)
-	{
-		if (!isLoggedIn) 
-		{
+	public void updateCustomer(long id) {
+		if (!isLoggedIn) {
+			System.out.println("Not logged in, returning...");
+			return;
+		}
+
+		try {
+			customerData.updateCustomer(id);
+		} catch (MyException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Customer getCustomer(long id) {
+		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		Customer customerToReturn = null;
-		try
-		{
+		try {
 			customerToReturn = customerData.getCustomer(id);
-		}
-		catch(MyException e)
-		{
+		} catch (MyException e) {
 			e.printStackTrace();
 		}
 		return customerToReturn;
 	}
 
-	public ArrayList<Customer> getAllCustomer()
-	{
-		if (!isLoggedIn) 
-		{
+	public ArrayList<Customer> getAllCustomer() {
+		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		ArrayList<Customer> customerListToReturn = null;
 		try {
 			customerListToReturn = customerData.getAllCustomers();
-		}
-		catch(MyException e)
-		{
+		} catch (MyException e) {
 			e.printStackTrace();
 		}
 		return customerListToReturn;
 	}
-	
-	
+
 }

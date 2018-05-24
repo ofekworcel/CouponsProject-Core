@@ -1,7 +1,9 @@
 package Facade;
 
+import Utilities.MyException;
+
 public interface CouponClientFacade {
 
-	public void login (String name, String password, ClientType type);
+	public CouponClientFacade login (String name, String password, ClientType type) throws MyException;
 	
 }

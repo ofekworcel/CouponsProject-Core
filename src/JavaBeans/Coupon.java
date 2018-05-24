@@ -18,6 +18,11 @@ public class Coupon {
 	private String image;
 
 	
+	
+	
+	public Coupon() {
+	}
+
 	public Coupon(long id, String title, Date startDate, Date endDate, int amount, CouponType type, String message, double price, String image) 
 	{
 		this.id = id;
@@ -137,4 +142,7 @@ public class Coupon {
 		} 
 		return false;
 	}
+	
+	
+	
 }

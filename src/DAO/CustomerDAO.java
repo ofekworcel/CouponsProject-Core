@@ -23,4 +23,6 @@ public interface CustomerDAO {
 	
 	public Customer getCustomer (long id) throws MyException;
 	
+	public Customer getCustomerByName (String name) throws MyException;
+
 }

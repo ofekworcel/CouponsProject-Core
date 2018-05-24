@@ -15,7 +15,7 @@ import Thread.CouponCleaner;
 import Utilities.SimpleDate;
 
 public class Main {
-
+/*
 	public static void main(String[] args) {
 		CouponDBDAO couponData = new CouponDBDAO();
 		CouponCleaner cleaner = new CouponCleaner(couponData, false, 1);
@@ -108,5 +108,5 @@ public class Main {
 			cleaner.run();
 	
 	}
-
+*/
 }

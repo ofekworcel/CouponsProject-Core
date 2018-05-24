@@ -1,7 +1,5 @@
 package Facade;
 
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -14,37 +12,30 @@ import Utilities.MyException;
 
 public class CustomerFacade implements CouponClientFacade{
 	
-	//The class for SQL Statements
-	Statement st = null; 
-	//the table results from the SQL server
-	ResultSet rs = null;
-	static boolean isLoggedIn = false;
-	CustomerDBDAO customerData = new CustomerDBDAO();
-	CouponDBDAO couponData = new CouponDBDAO();
+	private CustomerDBDAO customerData;
+	private CouponDBDAO couponData;
+	private Customer currentCustomer;
 	
+	
+	
+	public CustomerFacade() {
+		this.customerData = new CustomerDBDAO();
+		this.couponData = new CouponDBDAO();
+		this.currentCustomer = null;
+	}
+
 	@Override
-	public void login(String name, String password, ClientType type) {
-		try 
-		{
-			ArrayList<Customer> checkc = customerData.getAllCustomers();
-			
-			for (int i = 0; i < checkc.size(); i++) 
-			{
-				if (checkc.get(i).getCustName() == name && checkc.get(i).getPassword() == password) 
-				{
-					isLoggedIn = true;
-				}
-			}
-		} 
-		catch (MyException e) 
-		{
-			e.printStackTrace();
+	public CouponClientFacade login(String name, String password, ClientType type) throws MyException {
+		if(customerData.login(name, password)) {
+			this.currentCustomer = customerData.getCustomerByName(name);
+			return this;
 		}
+		return null;
 	} 
 	
 	public void purchaseCoupon(Coupon myCoupon, Customer myCustomer)
 	{
-		if (!isLoggedIn) 
+		if (this.currentCustomer!=null) 
 		{
 			System.out.println("Not logged in, returning...");
 			return;
@@ -58,6 +49,7 @@ public class CustomerFacade implements CouponClientFacade{
 			}
 		
 		couponData.addCoupon(myCoupon, myCustomer);
+		couponData.buyCoupon(myCoupon.getId());
 		} 
 		catch (MyException e) 
 		{
@@ -67,7 +59,7 @@ public class CustomerFacade implements CouponClientFacade{
 
 	public Collection<Coupon> getAllPurchasedCoupons(long id)
 	{
-		if (!isLoggedIn) 
+				if (this.currentCustomer!=null)  
 		{
 			System.out.println("Not logged in, returning...");
 			return null;
@@ -86,7 +78,7 @@ public class CustomerFacade implements CouponClientFacade{
 
 	public ArrayList<Coupon> getAllPurchasedCouponsByType(CouponType type)
 	{
-		if (!isLoggedIn) 
+				if (this.currentCustomer!=null)  
 		{
 			System.out.println("Not logged in, returning...");
 			return null;
@@ -116,7 +108,7 @@ public class CustomerFacade implements CouponClientFacade{
 
 	public ArrayList<Coupon> getAllPurchasedCouponsByPrice(double Price)
 	{
-		if (!isLoggedIn) 
+		if (this.currentCustomer != null) 
 		{
 			System.out.println("Not logged in, returning...");
 			return null;

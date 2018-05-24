@@ -1,205 +1,129 @@
 package Data;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Scanner;
 
 import DAO.CompanyDAO;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
+import JavaBeans.CouponType;
 import Utilities.ConnectionPoolSingleton;
 import Utilities.MyException;
-import Utilities.Utils;
 
 public class CompanyDBDAO implements CompanyDAO {
 
-	//The class for SQL Statements
-	Statement st = null; 
-	//the table results from the SQL server
-	ResultSet rs = null;
-	
+	// The class for SQL Statements
+	private Statement st = null;
+	// the table results from the SQL server
+	private ResultSet rs = null;
+	// Gets instance of connection pool
+	private ConnectionPoolSingleton pool;
+
+	public CompanyDBDAO() {
+		this.pool = ConnectionPoolSingleton.getInstance();
+	}
+
 	@Override
 	public void addCompany(Company myCOMPany) throws MyException {
-		
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
+
 		Connection connect = pool.getConnection();
 
-		 String query = " INSERT INTO coupon_project.company (ID, COMP_NAME, PASSWORD, EMAIL) VALUES (?,?,?,?)";  
-		 try 
-		 {
-		  // create the mysql insert prepared statement
-		  PreparedStatement preparedStmt = (PreparedStatement) connect.prepareStatement(query);
-		
-		   preparedStmt.setLong (1, myCOMPany.getId()); 
-		   preparedStmt.setString(2, myCOMPany.getCompName()); 
-		   preparedStmt.setString(3, myCOMPany.getPassword());     
-		   preparedStmt.setString(4, myCOMPany.getEmail());
-		   
-		// execute the prepared statement
-		 preparedStmt.execute(); 
-		
-		 System.out.println("New Company added...");
-		 
-		 pool.returnConnection(connect);   
-		 } 
-		 catch (SQLException e) 
-		 {
+		String query = " INSERT INTO coupon_project.company (ID, COMP_NAME, PASSWORD, EMAIL) VALUES (?,?,?,?)";
+		try {
+			// create the mysql insert prepared statement
+			PreparedStatement preparedStmt = (PreparedStatement) connect.prepareStatement(query);
+
+			preparedStmt.setLong(1, myCOMPany.getId());
+			preparedStmt.setString(2, myCOMPany.getCompName());
+			preparedStmt.setString(3, myCOMPany.getPassword());
+			preparedStmt.setString(4, myCOMPany.getEmail());
+
+			// execute the prepared statement
+			preparedStmt.execute();
+
+			System.out.println("New Company added...");
+		} catch (SQLException e) {
 			throw new MyException("faield to add Company");
-		 } 
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
+		}
 	}
 
 	@Override
 	public ArrayList<Company> getAllCompanys() throws MyException {
-		
-		ArrayList<Company> allCompanys= new ArrayList<Company>();
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
+
+		ArrayList<Company> allCompanys = new ArrayList<Company>();
 		Connection connect = pool.getConnection();
-	    try 
-	    {
-			st = (Statement) connect.createStatement();    //create connection to sql server
-		
+		try {
+			st = (Statement) connect.createStatement(); // create connection to sql server
+
 			rs = st.executeQuery("SELECT * FROM coupon_project.company");
-		
-			while (rs.next()) 
-			{
+
+			while (rs.next()) {
 				int id = rs.getInt("ID");
 				String name = rs.getString("COMP_NAME");
 				String password = rs.getString("PASSWORD");
 				String email = rs.getString("EMAIL");
-			
-				allCompanys.add(new Company(id, name, password, email)); 
+
+				allCompanys.add(new Company(id, name, password, email));
 			}
-		
-		pool.returnConnection(connect); 
-	    } 
-	    catch (SQLException e) 
-	    {
-			throw new MyException("error get all Companys");
-	    } 
-		return allCompanys;
+
+			return allCompanys;
+
+		} catch (SQLException e) {
+			throw new MyException("Error getting all companies.");
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
+		}
 	}
 
 	@Override
-	public void updateCompany(long id) throws MyException {
-		boolean checker = false;
-		Scanner Scan = new Scanner(System.in);
-		
-		for (int i = 0; i < getAllCompanys().size(); i++) 
-		{
-			if (getAllCompanys().get(i).getId() == id) 
-			{
-				System.out.println("For Company: " + getAllCompanys().get(i).getCompName() + "...");
-				checker = true;
-			}
+	public void updateCompany(Company company) throws MyException {
+		String query = "UPDATE coupon_project.company SET PASSWORD='" + company.getPassword() + "', EMAIL='"
+				+ company.getEmail() + "'";
+		Connection connect = pool.getConnection();
+		try {
+			int rowsChanged = connect.createStatement().executeUpdate(query);
+			if (rowsChanged < 1)
+				throw new MyException("Company you are trying to update does not exist.");
+		} catch (SQLException e) {
+			throw new MyException("There has been a problem updating company.");
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
-		
-		if (checker == false) 
-		{
-			System.out.println("Company ID not found... returning to main menu...\n");
-			Scan.close();
-			return;
-		}
-		
-		System.out.println("Which field do you want to update?");
-		System.out.println("1 - Company name");
-		System.out.println("2 - Password");
-		System.out.println("3 - Email");
-		System.out.println("menu - back to Main menu");
-		
-		
-		String choice = Scan.next();
-		if (choice.equals("menu")) 
-		{
-			Scan.close();
-			return;
-		} 
-		else 
-		{
-			switch (choice.charAt(0)) 
-			{
-			case '1':
-				System.out.println("Enter new details...");
-				System.out.println("Company name:");
-				String name = Scan.next();
-				name += Scan.nextLine();		//Consumes the leftover line
-			
-				String query = " UPDATE coupon_project.company "
-						+ " SET COMP_NAME = '" + name + "' "
-						+ " WHERE ID = " + id;
-				Utils.executeQuery(query);
-				updateCompany(id);
-				break;
 
-			case '2':
-				System.out.println("Password:");
-				String year = Scan.next();
-			
-				String query2 = " UPDATE coupon_project.company "
-						+ " SET PASSWORD = '" + year + "' "
-						+ " WHERE ID = " + id;
-				Utils.executeQuery(query2);
-				updateCompany(id);
-				break;
-				
-				
-			case '3':
-				System.out.println("Enter Email adress:");
-				String email = Scan.next();
-				email += Scan.nextLine();
-			
-				String query3 = " UPDATE coupon_project.company "
-						+ " SET EMAIL ='" + email + "' "
-						+ " WHERE ID= " + id;
-				Utils.executeQuery(query3);
-				updateCompany(id);
-				break;
-				
-			default:
-				System.out.println("Invalid input, try again...");
-				
-				updateCompany(id);
-				break;
-			}
-		}
-		Scan.close();
 	}
 
 	@Override
 	public void deleteCompany(long id) throws MyException {
 		String query = " DELETE FROM coupon_project.company WHERE ID= " + id;
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
 		Connection connect = pool.getConnection();
-		
+
 		int rowsAffected;
-		
-		
-		try 
-		{
+
+		try {
 			st = (Statement) connect.createStatement();
-			
+
 			rowsAffected = st.executeUpdate(query);
-			
+
 			System.out.println("Rows affected " + rowsAffected);
-			
-			if (rowsAffected > 0) 
-			{
-				System.out.println("Company deleted...");
-			}
-			else
-			{
-				System.out.println("No matching id found...");
-			}
-			
-			pool.returnConnection(connect); 
-		}
-		catch (SQLException e) 
-		{
+			if (rowsAffected < 1)
+				throw new MyException("Company you are trying to delete doesn't exist in the database.");
+
+		} catch (SQLException e) {
 			throw new MyException("Something went wrong - delete Company");
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
 	}
 
@@ -207,11 +131,9 @@ public class CompanyDBDAO implements CompanyDAO {
 	public Boolean login(String compName, String password) throws MyException {
 		ArrayList<Company> allCustomers = getAllCompanys();
 		boolean loginStatus = false;
-		
-		for (int i = 0; i < allCustomers.size(); i++) 
-		{
-			if (allCustomers.get(i).getCompName() == compName && allCustomers.get(i).getPassword() == password) 
-			{
+
+		for (int i = 0; i < allCustomers.size(); i++) {
+			if (allCustomers.get(i).getCompName() == compName && allCustomers.get(i).getPassword() == password) {
 				loginStatus = true;
 			}
 		}
@@ -220,48 +142,83 @@ public class CompanyDBDAO implements CompanyDAO {
 
 	@Override
 	public Collection<Coupon> getCoupons(long id) throws MyException {
-		ArrayList<Coupon> allCoupons= new ArrayList<Coupon>();
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
+		ArrayList<Coupon> allCoupons = new ArrayList<Coupon>();
 		Connection connect = pool.getConnection();
-		CouponDBDAO cdao = new CouponDBDAO();
-		
-		 String query = "SELECT * FROM coupon_project.company_coupon WHERE COMP_ID="+id;  
-		 try 
-		 {
-			st = (Statement) connect.createStatement();    //create connection to sql server
+
+		// String query = "SELECT * FROM coupon_project.company_coupon WHERE COMP_ID=" +
+		// id;
+		String query = "SELECT coupon.* " + "FROM coupon "
+				+ "JOIN company_coupon ON company_coupon.COUPON_ID = coupon.ID " + "WHERE company_coupon.COMP_ID = "
+				+ id;
+
+		try {
+			st = (Statement) connect.createStatement(); // create connection to sql server
 			rs = st.executeQuery(query);
-			
-			while(rs.next())
-			{
-				allCoupons.add(cdao.getCoupon(rs.getLong("COUPON_ID")));
+			long couponId;
+			String title, message, image;
+			Date startDate, endDate;
+			CouponType type;
+			int amount;
+			double price;
+
+			while (rs.next()) {
+				couponId = rs.getLong("ID");
+				title = rs.getString("TITLE");
+				startDate = rs.getDate("START_DATE");
+				endDate = rs.getDate("END_DATE");
+				amount = rs.getInt("AMOUNT");
+				type = CouponType.valueOf(rs.getString("TYPE"));
+				message = rs.getString("MESSAGE");
+				price = rs.getDouble("PRICE");
+				image = rs.getString("IMAGE");
+
+				allCoupons.add(new Coupon(couponId, title, startDate, endDate, amount, type, message, price, image));
 			}
 
-			pool.returnConnection(connect);   
-		 } 
-		 catch (SQLException e) 
-		 {
-				throw new MyException("failed at CompanyDBDAO getCoupons");
-		 }       
-		return allCoupons;
+			return allCoupons;
+		} catch (SQLException e) {
+			throw new MyException("failed at CompanyDBDAO getCoupons");
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
+		}
 	}
 
 	@Override
 	public Company getCompany(long id) throws MyException {
 		ArrayList<Company> companies = getAllCompanys();
 		Company compToReturn = null;
-		
-		for (int i = 0; i < companies.size(); i++) 
-		{
-			if (companies.get(i).getId() == id) 
-			{
+
+		for (int i = 0; i < companies.size(); i++) {
+			if (companies.get(i).getId() == id) {
 				compToReturn = companies.get(i);
 			}
 		}
-		if (compToReturn == null) 
-		{
+		if (compToReturn == null) {
 			throw new MyException("No company found - get company by id");
 		}
 		return compToReturn;
+	}
+
+	@Override
+	public Company getCompanyByName(String companyName) throws MyException {
+		Connection connect = pool.getConnection();
+		String query = "SELECT * FROM company WHERE COMP_NAME='" + companyName + "'";
+		try {
+			rs = connect.createStatement().executeQuery(query);
+			if (rs.first()) {
+				long id = rs.getLong("ID");
+				String password = rs.getString("PASSWORD");
+				String email = rs.getString("EMAIL");
+				return new Company(id, companyName, password, email);
+			}
+			return null;
+		} catch (SQLException e) {
+			throw new MyException("There has been a problem with the database.");
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
+		}
 	}
 
 }
