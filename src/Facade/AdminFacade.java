@@ -27,7 +27,7 @@ public class AdminFacade implements CouponClientFacade {
 	@Override
 	public CouponClientFacade login(String name, String password, ClientType type) {
 
-		if (name == "admin" && password == "1234") {
+		if (name.equals("admin") && password.equals("1234")) {
 			isLoggedIn = true;
 			return this;
 		}
@@ -35,20 +35,13 @@ public class AdminFacade implements CouponClientFacade {
 
 	}
 
-	public void addCompany(Company myCOMPany) {
-		try {
-			if (isLoggedIn) {
-				if (companyData.getCompany(myCOMPany.getId()) != null) {
-					System.out.println("Company already exists...");
-					return;
-				}
-				companyData.addCompany(myCOMPany);
-			} else {
-				System.out.println("User not logged in...");
-			}
-		} catch (MyException e) {
-			e.printStackTrace();
+	public void addCompany(Company myCOMPany) throws MyException {
+		if (isLoggedIn) {
+			companyData.addCompany(myCOMPany);
+		} else {
+			System.out.println("User not logged in...");
 		}
+
 	}
 
 	public void removeCompany(long id) {

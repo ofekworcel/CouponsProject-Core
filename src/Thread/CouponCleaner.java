@@ -23,11 +23,13 @@ public class CouponCleaner implements Runnable {
 		currentThread = Thread.currentThread();
 		ArrayList<Coupon> AllCoupon = null;
 		while (!stop) {
+			
 			try {
 				AllCoupon = (ArrayList<Coupon>) couponData.getAllCoupons();
 			} catch (MyException e) {
 				e.printStackTrace();
 			}
+			
 			for (Coupon c : AllCoupon) {
 				if (c.getEndDate() != null && c.getEndDate().getTime() < System.currentTimeMillis())
 					try {
@@ -35,12 +37,14 @@ public class CouponCleaner implements Runnable {
 					} catch (MyException e) {
 						e.printStackTrace();
 					}
-				try {
-					Thread.sleep(1000 * 60 * 60 * 24);
-				} catch (InterruptedException e) {
-					System.out.println("The thread has been stopped.");
-				}
 			}
+			
+			try {
+				Thread.sleep(1000 * 60 * 60 * 24);
+			} catch (InterruptedException e) {
+				System.out.println("The thread has been stopped.");
+			}
+
 		}
 	}
 

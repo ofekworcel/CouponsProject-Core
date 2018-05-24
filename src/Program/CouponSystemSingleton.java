@@ -15,7 +15,7 @@ public class CouponSystemSingleton {
 	private CouponCleaner cleaner;
 
 	private CouponSystemSingleton() {
-		ConnectionPoolSingleton.getInstance();
+		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
 		cleaner = new CouponCleaner();
 		(new Thread(cleaner)).start();
 	}

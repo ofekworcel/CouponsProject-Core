@@ -143,6 +143,7 @@ public class ConnectionPoolSingleton
 	        try 
 	        {
 				connection = DriverManager.getConnection(connectionURL, "root", "2795");
+				System.out.println(connection);
 			}
 	        catch (SQLException e) 
 	        {

@@ -172,7 +172,7 @@ public class CustomerDBDAO implements CustomerDAO {
 		boolean loginStatus = false;
 
 		for (int i = 0; i < allCustomers.size(); i++) {
-			if (allCustomers.get(i).getCustName() == custName && allCustomers.get(i).getPassword() == password) {
+			if (allCustomers.get(i).getCustName().equals(custName) && allCustomers.get(i).getPassword().equals(password)) {
 				loginStatus = true;
 			}
 		}
