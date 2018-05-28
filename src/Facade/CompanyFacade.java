@@ -26,8 +26,8 @@ public class CompanyFacade implements CouponClientFacade {
 
 	@Override
 	public CouponClientFacade login(String name, String password, ClientType type) throws MyException {
-		
-		if(companyData.login(name, password)) {
+
+		if (companyData.login(name, password)) {
 			this.currentCompany = companyData.getCompanyByName(name);
 			return this;
 		}
@@ -35,94 +35,73 @@ public class CompanyFacade implements CouponClientFacade {
 
 	}
 
-	public void addCoupon(Coupon myCoupon, Company myCompany) {
+	public void addCoupon(Coupon myCoupon) throws MyException {
+		if (currentCompany != null) {
+			System.out.println("Not logged in, returning...");
+			return;
+		}
+		if (couponData.getCoupon(myCoupon.getId()) != null) {
+			System.out.println("Coupon already exists...");
+			return;
+		}
+		couponData.addCoupon(myCoupon, currentCompany);
+	}
+
+	public void removeCoupon(int id) throws MyException {
+
+		if (currentCompany != null) {
+			System.out.println("Not logged in, returning...");
+			return;
+		}
+		couponData.deleteCoupon(id);
+
+	}
+
+	public void updateCoupon(int id) throws MyException {
 		if (currentCompany != null) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
 
-		try {
-			if (couponData.getCoupon(myCoupon.getId()) != null) {
-				System.out.println("Coupon already exists...");
-				return;
-			}
-			couponData.addCoupon(myCoupon, myCompany);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+		couponData.updateCoupon(id);
+
 	}
 
-	public void removeCoupon(int id) {
-	
+	public Coupon getCoupon(int id) throws MyException {
 		if (currentCompany != null) {
-			System.out.println("Not logged in, returning...");
-			return;
-		}
-
-		try {
-			couponData.deleteCoupon(id);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void updateCoupon(int id) {
-		if (currentCompany != null) {
-			System.out.println("Not logged in, returning...");
-			return;
-		}
-
-		try {
-			couponData.updateCoupon(id);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public Coupon getCoupon(int id) {
-			if (currentCompany != null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 
 		Coupon couponToReturn = null;
 
-		try {
-			couponToReturn = couponData.getCoupon(id);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+		couponToReturn = couponData.getCoupon(id);
+
 		return couponToReturn;
 	}
 
-	public Collection<Coupon> getAllCoupon(long id) {
-			if (currentCompany != null) {
+	public Collection<Coupon> getAllCoupon(long id) throws MyException {
+		if (currentCompany != null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		ArrayList<Coupon> ArrayToReturn = null;
 
-		try {
-			ArrayToReturn = (ArrayList<Coupon>) companyData.getCoupons(id);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+		ArrayToReturn = (ArrayList<Coupon>) companyData.getCoupons(id);
+
 		return ArrayToReturn;
 	}
 
-	public Collection<Coupon> getCouponbyType(CouponType type) {
-			if (currentCompany != null) {
+	public Collection<Coupon> getCouponbyType(CouponType type) throws MyException {
+		if (currentCompany != null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 
 		Collection<Coupon> collectionToReturn = null;
 
-		try {
-			collectionToReturn = couponData.getCouponByType(type);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+		collectionToReturn = couponData.getCouponByType(type);
+
 		return collectionToReturn;
 	}
 
