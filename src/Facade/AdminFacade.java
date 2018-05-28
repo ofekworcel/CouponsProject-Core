@@ -44,137 +44,103 @@ public class AdminFacade implements CouponClientFacade {
 
 	}
 
-	public void removeCompany(long id) {
+	public void removeCompany(long id) throws MyException {
 		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
-		try {
-			ArrayList<Coupon> tempCoupons = (ArrayList<Coupon>) companyData.getCoupons(id);
+		ArrayList<Coupon> tempCoupons = (ArrayList<Coupon>) companyData.getCoupons(id);
 
-			for (int i = 0; i < tempCoupons.size(); i++) {
-				companyData.deleteCompany(tempCoupons.get(i).getId());
-			}
-
-			companyData.deleteCompany(id);
-		} catch (MyException e) {
-			e.printStackTrace();
+		for (int i = 0; i < tempCoupons.size(); i++) {
+			companyData.deleteCompany(tempCoupons.get(i).getId());
 		}
+
+		companyData.deleteCompany(id);
 	}
 
-	public void updateCompany(Company company) {
+	public void updateCompany(Company company) throws MyException {
 		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
-		try {
-			companyData.updateCompany(company);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+		companyData.updateCompany(company);
 
 	}
 
-	public Company getCompany(long id) {
+	public Company getCompany(long id) throws MyException {
 		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		Company companyToReturn = null;
-		try {
-			companyToReturn = companyData.getCompany(id);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+
+		companyToReturn = companyData.getCompany(id);
+
 		return companyToReturn;
 	}
 
-	public ArrayList<Company> getAllCompanies() {
+	public ArrayList<Company> getAllCompanies() throws MyException {
 		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		ArrayList<Company> companyListToReturn = null;
-		try {
-			companyListToReturn = companyData.getAllCompanys();
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+		companyListToReturn = companyData.getAllCompanys();
 		return companyListToReturn;
 	}
 
-	public void addCustomer(Customer customer) {
+	public void addCustomer(Customer customer) throws MyException {
 		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
-		try {
-			if (customerData.getCustomer(customer.getId()) != null) {
-				System.out.println("Customer already exists...");
-				return;
-			}
-			customerData.addCustomer(customer);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void deleteCustomer(long id) {
-		if (!isLoggedIn) {
-			System.out.println("Not logged in, returning...");
+		if (customerData.getCustomer(customer.getId()) != null) {
+			System.out.println("Customer already exists...");
 			return;
 		}
-
-		try {
-			ArrayList<Coupon> tempCoupons = (ArrayList<Coupon>) customerData.getCoupons(id);
-
-			for (int i = 0; i < tempCoupons.size(); i++) {
-				couponData.deleteCoupon(tempCoupons.get(i).getId());
-			}
-			customerData.deleteCustomer(id);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+		customerData.addCustomer(customer);
 	}
 
-	public void updateCustomer(long id) {
+	public void deleteCustomer(long id) throws MyException {
 		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
 
-		try {
-			customerData.updateCustomer(id);
-		} catch (MyException e) {
-			e.printStackTrace();
+		ArrayList<Coupon> tempCoupons = (ArrayList<Coupon>) customerData.getCoupons(id);
+
+		for (int i = 0; i < tempCoupons.size(); i++) {
+			couponData.deleteCoupon(tempCoupons.get(i).getId());
 		}
+		customerData.deleteCustomer(id);
 	}
 
-	public Customer getCustomer(long id) {
+	public void updateCustomer(long id) throws MyException {
+		if (!isLoggedIn) {
+			System.out.println("Not logged in, returning...");
+			return;
+		}
+
+		customerData.updateCustomer(id);
+	}
+
+	public Customer getCustomer(long id) throws MyException {
 		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		Customer customerToReturn = null;
-		try {
-			customerToReturn = customerData.getCustomer(id);
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+		customerToReturn = customerData.getCustomer(id);
 		return customerToReturn;
 	}
 
-	public ArrayList<Customer> getAllCustomer() {
+	public ArrayList<Customer> getAllCustomer() throws MyException {
 		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		ArrayList<Customer> customerListToReturn = null;
-		try {
-			customerListToReturn = customerData.getAllCustomers();
-		} catch (MyException e) {
-			e.printStackTrace();
-		}
+		customerListToReturn = customerData.getAllCustomers();
 		return customerListToReturn;
 	}
 
