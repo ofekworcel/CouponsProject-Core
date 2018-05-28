@@ -36,12 +36,8 @@ public class CompanyFacade implements CouponClientFacade {
 	}
 
 	public void addCoupon(Coupon myCoupon) throws MyException {
-		if (currentCompany != null) {
+		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
-			return;
-		}
-		if (couponData.getCoupon(myCoupon.getId()) != null) {
-			System.out.println("Coupon already exists...");
 			return;
 		}
 		couponData.addCoupon(myCoupon, currentCompany);
@@ -49,7 +45,7 @@ public class CompanyFacade implements CouponClientFacade {
 
 	public void removeCoupon(int id) throws MyException {
 
-		if (currentCompany != null) {
+		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
@@ -58,7 +54,7 @@ public class CompanyFacade implements CouponClientFacade {
 	}
 
 	public void updateCoupon(int id) throws MyException {
-		if (currentCompany != null) {
+		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
@@ -68,7 +64,7 @@ public class CompanyFacade implements CouponClientFacade {
 	}
 
 	public Coupon getCoupon(int id) throws MyException {
-		if (currentCompany != null) {
+		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
@@ -81,7 +77,7 @@ public class CompanyFacade implements CouponClientFacade {
 	}
 
 	public Collection<Coupon> getAllCoupon(long id) throws MyException {
-		if (currentCompany != null) {
+		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
@@ -93,7 +89,7 @@ public class CompanyFacade implements CouponClientFacade {
 	}
 
 	public Collection<Coupon> getCouponbyType(CouponType type) throws MyException {
-		if (currentCompany != null) {
+		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}

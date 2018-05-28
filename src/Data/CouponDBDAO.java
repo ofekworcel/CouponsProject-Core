@@ -35,8 +35,8 @@ public class CouponDBDAO implements CouponDAO {
 
 			preparedStmt.setLong(1, myCoupon.getId());
 			preparedStmt.setString(2, myCoupon.getTitle());
-			preparedStmt.setDate(3, (java.sql.Date) myCoupon.getStartDate());
-			preparedStmt.setDate(4, (java.sql.Date) myCoupon.getEndDate());
+			preparedStmt.setDate(3, new java.sql.Date( myCoupon.getStartDate().getTime()));
+			preparedStmt.setDate(4, new java.sql.Date( myCoupon.getEndDate().getTime()));
 			preparedStmt.setInt(5, myCoupon.getAmount());
 			preparedStmt.setString(6, myCoupon.getType().name());
 			preparedStmt.setString(7, myCoupon.getMessage());
@@ -128,8 +128,8 @@ public class CouponDBDAO implements CouponDAO {
 			while (rs.next()) {
 				long id = rs.getInt("ID");
 				String title = rs.getString("TITLE");
-				Date sdate = rs.getDate("START_DATE");
-				Date edate = rs.getDate("END_DATE");
+				Date sdate = new Date(rs.getDate("START_DATE").getTime());
+				Date edate = new Date(rs.getDate("END_DATE").getTime());
 				int amount = rs.getInt("AMOUNT");
 				String typeraw = rs.getString("TYPE");
 				String message = rs.getString("MESSAGE");
