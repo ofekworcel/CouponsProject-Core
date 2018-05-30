@@ -79,12 +79,12 @@ public class CustomerDBDAO implements CustomerDAO {
 	}
 
 	@Override
-	public void updateCustomer(long id) throws MyException {
+	public void updateCustomer(Customer customer) throws MyException {
 		boolean checker = false;
 		Scanner Scan = new Scanner(System.in);
 
 		for (int i = 0; i < getAllCustomers().size(); i++) {
-			if (getAllCustomers().get(i).getId() == id) {
+			if (getAllCustomers().get(i).getId() == customer.getId()) {
 				System.out.println("For customer: " + getAllCustomers().get(i).getCustName() + "...");
 				checker = true;
 			}
@@ -115,9 +115,9 @@ public class CustomerDBDAO implements CustomerDAO {
 				name += Scan.nextLine(); // Consumes the leftover line
 
 				String query = " UPDATE coupon_project.customer " + " SET CUST_NAME = '" + name + "' " + " WHERE ID = "
-						+ id;
+						+ customer.getId();
 				Utils.executeQuery(query);
-				updateCustomer(id);
+				updateCustomer(customer);
 				break;
 
 			case '2':
@@ -125,15 +125,15 @@ public class CustomerDBDAO implements CustomerDAO {
 				String year = Scan.next();
 
 				String query2 = " UPDATE coupon_project.customer " + " SET PASSWORD = '" + year + "' " + " WHERE ID = "
-						+ id;
+						+ customer.getId();
 				Utils.executeQuery(query2);
-				updateCustomer(id);
+				updateCustomer(customer);
 				break;
 
 			default:
 				System.out.println("Invalid input, try again...");
 
-				updateCustomer(id);
+				updateCustomer(customer);
 				break;
 			}
 		}

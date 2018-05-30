@@ -115,13 +115,13 @@ public class AdminFacade implements CouponClientFacade {
 		customerData.deleteCustomer(id);
 	}
 
-	public void updateCustomer(long id) throws MyException {
+	public void updateCustomer(Customer customer) throws MyException {
 		if (!isLoggedIn) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
 
-		customerData.updateCustomer(id);
+		customerData.updateCustomer(customer);
 	}
 
 	public Customer getCustomer(long id) throws MyException {

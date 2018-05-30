@@ -13,7 +13,7 @@ public interface CustomerDAO {
 	
 	public ArrayList<Customer> getAllCustomers() throws MyException;
 
-	public void updateCustomer(long id)  throws MyException;
+	public void updateCustomer(Customer customer)  throws MyException;
 
 	public void deleteCustomer(long id) throws MyException;
 
