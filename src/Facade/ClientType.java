@@ -2,5 +2,5 @@ package Facade;
 
 public enum ClientType {
 
-	ADMIN, COMPANY, CUSTOMER;
+	ADMIN, COMPANY, CUSTOMER, GUEST;
 }

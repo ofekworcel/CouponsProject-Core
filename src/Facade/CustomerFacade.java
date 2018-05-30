@@ -47,14 +47,14 @@ public class CustomerFacade implements CouponClientFacade {
 
 	}
 
-	public Collection<Coupon> getAllPurchasedCoupons(long id) throws MyException {
+	public Collection<Coupon> getAllPurchasedCoupons() throws MyException {
 		if (this.currentCustomer != null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 
 		Collection<Coupon> CollectionToReturn = null;
-		CollectionToReturn = customerData.getCoupons(id);
+		CollectionToReturn = customerData.getCoupons(currentCustomer.getId());
 
 		return CollectionToReturn;
 	}

@@ -8,9 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Scanner;
-
-import javax.sql.PooledConnection;
 
 import DAO.CouponDAO;
 import JavaBeans.Company;
@@ -19,7 +16,6 @@ import JavaBeans.CouponType;
 import JavaBeans.Customer;
 import Utilities.ConnectionPoolSingleton;
 import Utilities.MyException;
-import Utilities.SimpleDate;
 import Utilities.Utils;
 
 public class CouponDBDAO implements CouponDAO {
