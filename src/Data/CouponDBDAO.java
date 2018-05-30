@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Scanner;
 
+import javax.sql.PooledConnection;
+
 import DAO.CouponDAO;
 import JavaBeans.Company;
 import JavaBeans.Coupon;
@@ -22,10 +24,15 @@ import Utilities.Utils;
 
 public class CouponDBDAO implements CouponDAO {
 
+	private ConnectionPoolSingleton pool;
+
+	public CouponDBDAO() {
+		this.pool = ConnectionPoolSingleton.getInstance();
+	}
+
 	@Override
 	public void addCoupon(Coupon myCoupon) throws MyException {
 
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
 		Connection connect = pool.getConnection();
 
 		String query = " INSERT INTO coupon_project.coupon (ID, TITLE, START_DATE, END_DATE, AMOUNT, TYPE, MESSAGE, PRICE, IMAGE) VALUES (?,?,?,?,?,?,?,?,?)";
@@ -35,8 +42,8 @@ public class CouponDBDAO implements CouponDAO {
 
 			preparedStmt.setLong(1, myCoupon.getId());
 			preparedStmt.setString(2, myCoupon.getTitle());
-			preparedStmt.setDate(3, new java.sql.Date( myCoupon.getStartDate().getTime()));
-			preparedStmt.setDate(4, new java.sql.Date( myCoupon.getEndDate().getTime()));
+			preparedStmt.setDate(3, new java.sql.Date(myCoupon.getStartDate().getTime()));
+			preparedStmt.setDate(4, new java.sql.Date(myCoupon.getEndDate().getTime()));
 			preparedStmt.setInt(5, myCoupon.getAmount());
 			preparedStmt.setString(6, myCoupon.getType().name());
 			preparedStmt.setString(7, myCoupon.getMessage());
@@ -48,17 +55,18 @@ public class CouponDBDAO implements CouponDAO {
 
 			System.out.println("New Coupon added...");
 
-			pool.returnConnection(connect);
 		} catch (SQLException e) {
 			throw new MyException("faield to add Coupon");
 
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
 	}
 
 	public void addCoupon(Coupon myCoupon, Company myCompany) throws MyException {
 		addCoupon(myCoupon);
 
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
 		Connection connect = pool.getConnection();
 
 		String query = " INSERT INTO coupon_project.company_coupon(COMP_ID , COUPON_ID) VALUES(?,?)";
@@ -74,17 +82,17 @@ public class CouponDBDAO implements CouponDAO {
 
 			System.out.println("New Coupon added to company " + myCompany.getCompName());
 
-			pool.returnConnection(connect);
-
 		} catch (SQLException e) {
 			throw new MyException("failed to add Coupon...");
 
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
 	}
 
 	public void addCoupon(Coupon myCoupon, Customer myCustomer) throws MyException {
 
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
 		Connection connect = pool.getConnection();
 
 		String query = " INSERT INTO coupon_project.customer_coupon(CUST_ID , COUPON_ID) VALUES(?,?)";
@@ -100,11 +108,12 @@ public class CouponDBDAO implements CouponDAO {
 
 			System.out.println("New Coupon added to customer " + myCustomer.getCustName());
 
-			pool.returnConnection(connect);
-
 		} catch (SQLException e) {
 			throw new MyException("failed to add Coupon...");
 
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
 	}
 
@@ -117,7 +126,6 @@ public class CouponDBDAO implements CouponDAO {
 		ResultSet rs = null;
 
 		ArrayList<Coupon> allCoupons = new ArrayList<Coupon>();
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
 		Connection connect = pool.getConnection();
 
 		try {
@@ -141,147 +149,30 @@ public class CouponDBDAO implements CouponDAO {
 				allCoupons.add(new Coupon(id, title, sdate, edate, amount, type, message, price, image));
 			}
 
-			pool.returnConnection(connect);
+			return allCoupons;
 		} catch (SQLException e) {
 			throw new MyException("error get all Coupons");
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
-		return allCoupons;
+
 	}
 
 	@Override
-	public void updateCoupon(long id) throws MyException {
-		boolean checker = false;
-		Date date = null;
-		Scanner Scan = new Scanner(System.in);
+	public void updateCoupon(Coupon coupon) throws MyException {
+		String query = "UDPATE coupon SET END_DATE='" + coupon.getEndDate() + "', " + "AMOUNT=" + coupon.getAmount()
+				+ " WHERE ID=" + coupon.getId();
+		Connection connect = pool.getConnection();
 
-		for (int i = 0; i < getAllCoupons().size(); i++) {
-			if (getAllCoupons().get(i).getId() == id) {
-				System.out.println("For Coupon: " + getAllCoupons().get(i).getTitle() + "...");
-				checker = true;
-			}
+		try {
+			connect.createStatement().executeUpdate(query);
+		} catch (SQLException e) {
+			throw new MyException(e.getMessage());
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
-
-		if (checker == false) {
-			System.out.println("Coupon ID not found... returning to main menu...\n");
-			Scan.close();
-			return;
-		}
-
-		System.out.println("Which field do you want to update?");
-		System.out.println("1 - Coupon title");
-		System.out.println("2 - Start date");
-		System.out.println("3 - End date");
-		System.out.println("4 - Amount of coupons");
-		System.out.println("5 - Coupon type");
-		System.out.println("6 - Message");
-		System.out.println("7 - Price");
-		System.out.println("8 - Image String");
-
-		System.out.println("menu - back to Main menu");
-
-		String choice = Scan.next();
-		if (choice.equals("menu")) {
-			Scan.close();
-			return;
-		} else {
-			switch (choice.charAt(0)) {
-			case '1':
-				System.out.println("Enter new details...");
-				System.out.println("Coupon title:");
-				String title = Scan.next();
-				title += Scan.nextLine(); // Consumes the leftover line
-
-				String query = " UPDATE coupon_project.coupon " + " SET TITLE = '" + title + "' " + " WHERE ID = " + id;
-				Utils.executeQuery(query);
-				updateCoupon(id);
-				break;
-
-			case '2':
-				System.out.println("Beggining date of the coupon (In days from now)");
-				int sdate = Scan.nextInt();
-
-				date = (Date) SimpleDate.dateByDays(sdate);
-
-				String query2 = " UPDATE coupon_project.coupon " + " SET START_DATE = '" + date + "' " + " WHERE ID = "
-						+ id;
-				Utils.executeQuery(query2);
-				updateCoupon(id);
-				break;
-
-			case '3':
-				System.out.println("Amount of days untill expiration:");
-				int edate = Scan.nextInt();
-
-				date = (Date) SimpleDate.dateByDays(edate);
-
-				String query3 = " UPDATE coupon_project.coupon " + " SET END_DATE ='" + edate + "' " + " WHERE ID= "
-						+ id;
-				Utils.executeQuery(query3);
-				updateCoupon(id);
-				break;
-
-			case '4':
-				System.out.println("Amount:");
-				String amount = Scan.nextLine();
-
-				String query4 = " UPDATE coupon_project.coupon " + " SET AMOUNT = '" + amount + "' " + " WHERE ID= "
-						+ id;
-				Utils.executeQuery(query4);
-				updateCoupon(id);
-				break;
-
-			case '5':
-				System.out.println("Coupon type, choose one:");
-				for (CouponType c : CouponType.values()) {
-					System.out.println(c);
-				}
-				String typeraw = Scan.nextLine();
-
-				CouponType typef = CouponType.valueOf(typeraw);
-
-				String type = typef.name();
-
-				String query5 = " UPDATE coupon_project.coupon " + " SET TYPE = '" + type + "' " + " WHERE ID= " + id;
-				Utils.executeQuery(query5);
-				updateCoupon(id);
-				break;
-
-			case '6':
-				System.out.println("Message:");
-				String message = Scan.nextLine();
-
-				String query6 = " UPDATE coupon_project.coupon " + " SET MESSAGE = '" + message + "' " + " WHERE ID= "
-						+ id;
-				Utils.executeQuery(query6);
-				updateCoupon(id);
-				break;
-
-			case '7':
-				System.out.println("Price:");
-				double price = Scan.nextDouble();
-
-				String query7 = " UPDATE coupon_project.coupon " + " SET PRICE = '" + price + "' " + " WHERE ID= " + id;
-				Utils.executeQuery(query7);
-				updateCoupon(id);
-				break;
-
-			case '8':
-				System.out.println("Image string:");
-				String image = Scan.nextLine();
-
-				String query8 = " UPDATE coupon_project.coupon " + " SET IMAGE = '" + image + "' " + " WHERE ID= " + id;
-				Utils.executeQuery(query8);
-				updateCoupon(id);
-				break;
-
-			default:
-				System.out.println("Invalid input, try again...");
-
-				updateCoupon(id);
-				break;
-			}
-		}
-		Scan.close();
 	}
 
 	@Override
@@ -291,7 +182,6 @@ public class CouponDBDAO implements CouponDAO {
 		Statement st = null;
 
 		String query = " DELETE FROM coupon_project.company_coupon WHERE COUPON_ID= " + id;
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
 		Connection connect = pool.getConnection();
 
 		int rowsAffected;
@@ -311,6 +201,9 @@ public class CouponDBDAO implements CouponDAO {
 
 		} catch (SQLException e) {
 			throw new MyException("Something went wrong - delete Coupon");
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
 
 		query = " DELETE FROM coupon_project.customer_coupon WHERE COUPON_ID= " + id;
@@ -379,8 +272,6 @@ public class CouponDBDAO implements CouponDAO {
 		Statement st = null;
 		// the table results from the SQL server
 		ResultSet rs = null;
-
-		ConnectionPoolSingleton pool = ConnectionPoolSingleton.getInstance();
 		Connection connect = pool.getConnection();
 		Collection<Coupon> coupCol = new ArrayList<Coupon>();
 
@@ -388,7 +279,6 @@ public class CouponDBDAO implements CouponDAO {
 			st = (Statement) connect.createStatement(); // create connection to Sql server
 
 			rs = st.executeQuery("SELECT * FROM coupon_project.coupon WHERE TYPE=" + type);
-			pool.returnConnection(connect);
 
 			long id = rs.getLong("ID");
 			String title = rs.getString("TITLE");
@@ -405,6 +295,9 @@ public class CouponDBDAO implements CouponDAO {
 			return coupCol;
 		} catch (SQLException e) {
 			throw new MyException("error get coupon by type");
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
 	}
 

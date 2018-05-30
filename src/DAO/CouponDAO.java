@@ -16,7 +16,7 @@ public interface CouponDAO {
 	
 	public ArrayList<Coupon> getAllCoupons() throws MyException;
 
-	public void updateCoupon(long id)  throws MyException;
+	public void updateCoupon(Coupon coupon)  throws MyException;
 
 	public void deleteCoupon(long id) throws MyException;
 	

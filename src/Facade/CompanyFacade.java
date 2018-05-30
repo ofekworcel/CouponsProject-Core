@@ -43,7 +43,7 @@ public class CompanyFacade implements CouponClientFacade {
 		couponData.addCoupon(myCoupon, currentCompany);
 	}
 
-	public void removeCoupon(int id) throws MyException {
+	public void removeCoupon(long id) throws MyException {
 
 		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
@@ -53,17 +53,16 @@ public class CompanyFacade implements CouponClientFacade {
 
 	}
 
-	public void updateCoupon(int id) throws MyException {
+	public void updateCoupon(Coupon coupon) throws MyException {
 		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
-
-		couponData.updateCoupon(id);
+		couponData.updateCoupon(coupon);
 
 	}
 
-	public Coupon getCoupon(int id) throws MyException {
+	public Coupon getCoupon(long id) throws MyException {
 		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
 			return null;
@@ -76,14 +75,13 @@ public class CompanyFacade implements CouponClientFacade {
 		return couponToReturn;
 	}
 
-	public Collection<Coupon> getAllCoupon(long id) throws MyException {
+	public Collection<Coupon> getAllCoupon() throws MyException {
 		if (currentCompany == null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
 		ArrayList<Coupon> ArrayToReturn = null;
-
-		ArrayToReturn = (ArrayList<Coupon>) companyData.getCoupons(id);
+		ArrayToReturn = (ArrayList<Coupon>) companyData.getCoupons(currentCompany.getId());
 
 		return ArrayToReturn;
 	}
