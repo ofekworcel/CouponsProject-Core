@@ -100,5 +100,11 @@ public class CompanyFacade implements CouponClientFacade {
 
 		return collectionToReturn;
 	}
+	
+	public Company getCurrentCompanyInfo() throws MyException{
+		if (currentCompany == null) 
+			throw new MyException("You need to log in.");
+		return currentCompany;
+	}
 
 }

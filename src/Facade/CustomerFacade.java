@@ -137,4 +137,10 @@ public class CustomerFacade implements CouponClientFacade{
 		return finalList;
 	}
 	
+	public Customer getCurrentCustomerInfo() throws MyException {
+		if(currentCustomer == null)
+			throw new MyException("You need to log in.");
+		return currentCustomer;
+	}
+
 }
