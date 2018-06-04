@@ -1,7 +1,7 @@
 package Data;
 
 import java.sql.Connection;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -193,8 +193,8 @@ public class CustomerDBDAO implements CustomerDAO {
 			while (rs.next()) {
 				long DBid = rs.getInt("ID");
 				String title = rs.getString("TITLE");
-				Date sdate = rs.getDate("START_DATE");
-				Date edate = rs.getDate("END_DATE");
+				Date sdate = new java.util.Date(rs.getDate("START_DATE").getTime());
+				Date edate = new java.util.Date(rs.getDate("END_DATE").getTime());
 				int amount = rs.getInt("AMOUNT");
 				String typeraw = rs.getString("TYPE");
 				String message = rs.getString("MESSAGE");

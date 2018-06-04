@@ -1,7 +1,6 @@
 package JavaBeans;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class Company {
 
@@ -10,7 +9,7 @@ public class Company {
 	private String compName;
 	private String password;
 	private String email;
-	private Collection<Coupon> coupons;
+	private ArrayList<Coupon> coupons;
 
 	
 	public Company() {
@@ -32,7 +31,7 @@ public class Company {
 	
 	
 	//With adding a coupon collection.
-	public Company(long id, String compName, String password, String email, Collection<Coupon> coupons) 
+	public Company(long id, String compName, String password, String email, ArrayList<Coupon> coupons) 
 	{
 		this.id = id;
 		this.compName = compName;
@@ -90,7 +89,7 @@ public class Company {
 		this.email = email;
 	}
 
-	public Collection<Coupon> getCoupons() {
+	public ArrayList<Coupon> getCoupons() {
 		return coupons;
 	}
 

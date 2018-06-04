@@ -132,8 +132,8 @@ public class CouponDBDAO implements CouponDAO {
 			while (rs.next()) {
 				long id = rs.getInt("ID");
 				String title = rs.getString("TITLE");
-				Date sdate = new Date(rs.getDate("START_DATE").getTime());
-				Date edate = new Date(rs.getDate("END_DATE").getTime());
+				Date sdate = new java.util.Date(rs.getDate("START_DATE").getTime());
+				Date edate = new java.util.Date(rs.getDate("END_DATE").getTime());
 				int amount = rs.getInt("AMOUNT");
 				String typeraw = rs.getString("TYPE");
 				String message = rs.getString("MESSAGE");
@@ -157,7 +157,7 @@ public class CouponDBDAO implements CouponDAO {
 
 	@Override
 	public void updateCoupon(Coupon coupon) throws MyException {
-		String query = "UDPATE coupon SET END_DATE='" + coupon.getEndDate() + "', " + "AMOUNT=" + coupon.getAmount()
+		String query = "UDPATE coupon SET END_DATE='" + new java.sql.Date(coupon.getEndDate().getTime()) + "', " + "AMOUNT=" + coupon.getAmount()
 				+ " WHERE ID=" + coupon.getId();
 		Connection connect = pool.getConnection();
 
@@ -278,8 +278,8 @@ public class CouponDBDAO implements CouponDAO {
 
 			long id = rs.getLong("ID");
 			String title = rs.getString("TITLE");
-			Date sdate = rs.getDate("START_DATE");
-			Date edate = rs.getDate("END_DATE");
+			Date sdate = new java.util.Date(rs.getDate("START_DATE").getTime());
+			Date edate = new java.util.Date(rs.getDate("END_DATE").getTime());
 			int amount = rs.getInt("AMOUNT");
 			CouponType ctype = CouponType.valueOf(rs.getString("TYPE"));
 			String message = rs.getString("MESSAGE");

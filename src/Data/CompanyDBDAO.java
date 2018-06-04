@@ -1,7 +1,7 @@
 package Data;
 
 import java.sql.Connection;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -88,7 +88,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	@Override
 	public void updateCompany(Company company) throws MyException {
 		String query = "UPDATE coupon_project.company SET PASSWORD='" + company.getPassword() + "', EMAIL='"
-				+ company.getEmail() + "'";
+				+ company.getEmail() + "' WHERE company.id = "+ company.getId();
 		Connection connect = pool.getConnection();
 		try {
 			int rowsChanged = connect.createStatement().executeUpdate(query);
@@ -164,8 +164,8 @@ public class CompanyDBDAO implements CompanyDAO {
 			while (rs.next()) {
 				couponId = rs.getLong("ID");
 				title = rs.getString("TITLE");
-				startDate = rs.getDate("START_DATE");
-				endDate = rs.getDate("END_DATE");
+				startDate = new java.util.Date(rs.getDate("START_DATE").getTime());
+				endDate = new java.util.Date(rs.getDate("END_DATE").getTime());
 				amount = rs.getInt("AMOUNT");
 				type = CouponType.valueOf(rs.getString("TYPE"));
 				message = rs.getString("MESSAGE");

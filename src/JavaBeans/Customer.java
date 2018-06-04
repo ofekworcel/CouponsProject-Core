@@ -1,16 +1,15 @@
 package JavaBeans;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class Customer {
 	
 	private long id;
 	private String custName;
 	private String password;
-	private Collection<Coupon> coupons;
+	private ArrayList<Coupon> coupons;
 
-	public Customer(long id, String custName, String password, Collection<Coupon> coupons) 
+	public Customer(long id, String custName, String password, ArrayList<Coupon> coupons) 
 	{
 		this.id = id;
 		this.custName = custName;
@@ -70,7 +69,7 @@ public class Customer {
 		this.password = password;
 	}
 
-	public Collection<Coupon> getCoupons() {
+	public ArrayList<Coupon> getCoupons() {
 		return coupons;
 	}
 
