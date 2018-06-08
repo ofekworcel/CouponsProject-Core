@@ -103,5 +103,11 @@ public class CustomerFacade implements CouponClientFacade {
 			throw new MyException("You need to log in.");
 		return currentCustomer;
 	}
+	
+	public void register(Customer customer) throws MyException
+	{
+		AdminFacade manager = new AdminFacade();
+		manager.addCustomer(customer);
+	}
 
 }

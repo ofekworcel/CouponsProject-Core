@@ -2,6 +2,9 @@ package Program;
 
 import java.util.ArrayList;
 
+import javax.naming.ldap.ManageReferralControl;
+
+import Data.CompanyDBDAO;
 import Data.CouponDBDAO;
 import Facade.AdminFacade;
 import Facade.ClientType;
@@ -12,12 +15,13 @@ import JavaBeans.Coupon;
 import JavaBeans.CouponType;
 import JavaBeans.Customer;
 import Thread.CouponCleaner;
+import Utilities.MyException;
 import Utilities.SimpleDate;
 
 public class Main {
-/*
+
 	public static void main(String[] args) {
-		CouponDBDAO couponData = new CouponDBDAO();
+/*		CouponDBDAO couponData = new CouponDBDAO();
 		CouponCleaner cleaner = new CouponCleaner(couponData, false, 1);
 		
 		
@@ -106,7 +110,28 @@ public class Main {
 			
 			
 			cleaner.run();
+*/	
+		
+		//checking Admin companies pull from DB. 
+//	AdminFacade manager =  new AdminFacade();
+//	manager.login("admin", "1234", ClientType.ADMIN);
+//	try {
+//		System.out.println(manager.getAllCompanies());
+//	} catch (MyException e) {
+//		e.printStackTrace();
+//	}
+//	
+	//checking coupons pull form DB.
+//	CouponDBDAO manager = new CouponDBDAO();
+//	
+//	try {
+//		System.out.println(manager.getAllCoupons());
+//	} catch (MyException e) {
+//		e.printStackTrace();
+//	}
+//	
 	
-	}
-*/
+	
+	
+	}	
 }

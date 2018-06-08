@@ -67,7 +67,7 @@ public class CompanyDBDAO implements CompanyDAO {
 			rs = st.executeQuery("SELECT * FROM coupon_project.company");
 
 			while (rs.next()) {
-				int id = rs.getInt("ID");
+				long id = rs.getInt("ID");
 				String name = rs.getString("COMP_NAME");
 				String password = rs.getString("PASSWORD");
 				String email = rs.getString("EMAIL");
@@ -164,8 +164,8 @@ public class CompanyDBDAO implements CompanyDAO {
 			while (rs.next()) {
 				couponId = rs.getLong("ID");
 				title = rs.getString("TITLE");
-				startDate = new java.util.Date(rs.getDate("START_DATE").getTime());
-				endDate = new java.util.Date(rs.getDate("END_DATE").getTime());
+				startDate = new Date(rs.getDate("START_DATE").getTime());
+				endDate = new Date(rs.getDate("END_DATE").getTime());
 				amount = rs.getInt("AMOUNT");
 				type = CouponType.valueOf(rs.getString("TYPE"));
 				message = rs.getString("MESSAGE");

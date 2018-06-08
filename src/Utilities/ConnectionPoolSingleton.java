@@ -132,14 +132,14 @@ public class ConnectionPoolSingleton
 			//Loads the driver from jar file
 			try 
 			{
-				Class.forName("com.mysql.jdbc.Driver").newInstance();
+				Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 			} 
 			catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) 
 			{
 				e.printStackTrace();
 			} 
 			//open connection using connection string
-			 String connectionURL = "jdbc:mysql://localhost/coupon_project?useSSL=false";
+			 String connectionURL = "jdbc:mysql://localhost/coupon_project?useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=IST";
 	        try 
 	        {
 				connection = DriverManager.getConnection(connectionURL, "root", "2795");
