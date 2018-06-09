@@ -80,64 +80,18 @@ public class CustomerDBDAO implements CustomerDAO {
 
 	@Override
 	public void updateCustomer(Customer customer) throws MyException {
-		boolean checker = false;
-		Scanner Scan = new Scanner(System.in);
-
-		for (int i = 0; i < getAllCustomers().size(); i++) {
-			if (getAllCustomers().get(i).getId() == customer.getId()) {
-				System.out.println("For customer: " + getAllCustomers().get(i).getCustName() + "...");
-				checker = true;
-			}
+		String query = "UPDATE coupon_project.customer SET PASSWORD='" + customer.getPassword() + "' WHERE company.id = "+ customer.getId();
+		Connection connect = pool.getConnection();
+		try {
+			int rowsChanged = connect.createStatement().executeUpdate(query);
+			if (rowsChanged < 1)
+				throw new MyException("Customer you are trying to update does not exist.");
+		} catch (SQLException e) {
+			throw new MyException("There has been a problem updating customer.");
+		} finally {
+			if (connect != null)
+				pool.returnConnection(connect);
 		}
-
-		if (checker == false) {
-			System.out.println("Customer ID not found... returning to main menu...\n");
-			Scan.close();
-			return;
-		}
-
-		System.out.println("Which field do you want to update?");
-		System.out.println("1 - Customer name");
-		System.out.println("2 - Password");
-
-		System.out.println("menu - back to Main menu");
-
-		String choice = Scan.next();
-		if (choice.equals("menu")) {
-			Scan.close();
-			return;
-		} else {
-			switch (choice.charAt(0)) {
-			case '1':
-				System.out.println("Enter new details...");
-				System.out.println("Customer name:");
-				String name = Scan.next();
-				name += Scan.nextLine(); // Consumes the leftover line
-
-				String query = " UPDATE coupon_project.customer " + " SET CUST_NAME = '" + name + "' " + " WHERE ID = "
-						+ customer.getId();
-				Utils.executeQuery(query);
-				updateCustomer(customer);
-				break;
-
-			case '2':
-				System.out.println("Password:");
-				String year = Scan.next();
-
-				String query2 = " UPDATE coupon_project.customer " + " SET PASSWORD = '" + year + "' " + " WHERE ID = "
-						+ customer.getId();
-				Utils.executeQuery(query2);
-				updateCustomer(customer);
-				break;
-
-			default:
-				System.out.println("Invalid input, try again...");
-
-				updateCustomer(customer);
-				break;
-			}
-		}
-		Scan.close();
 	}
 
 	@Override
