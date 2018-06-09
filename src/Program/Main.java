@@ -1,6 +1,7 @@
 package Program;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.naming.ldap.ManageReferralControl;
 
@@ -130,8 +131,28 @@ public class Main {
 //		e.printStackTrace();
 //	}
 //	
-	
-	
+		
+//		CouponDBDAO coupManager = new CouponDBDAO();
+//		Date d1 = SimpleDate.dateByDays(1);
+//		Date d2 = SimpleDate.dateByDays(10);
+//		CouponType ctype = CouponType.HEALTH;
+//		
+//		Coupon c1 = new Coupon(111, "coupon1", d1, d2, 13, ctype, "testMessage", 13, "");
+////		
+////		try {
+////			coupManager.addCoupon(c1);
+////		} catch (MyException e) {
+////			e.printStackTrace();
+////		}
+//		
+//		
+//		Coupon c2 = new Coupon(111, "coupon1", d1, d2, 13, ctype, "updatemessage", 13, "");
+//		try {
+//			coupManager.updateCoupon(c2);
+//		} catch (MyException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	
 	}	
 }

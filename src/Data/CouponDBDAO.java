@@ -157,13 +157,25 @@ public class CouponDBDAO implements CouponDAO {
 
 	@Override
 	public void updateCoupon(Coupon coupon) throws MyException {
-		String query = "UDPATE coupon SET END_DATE='" + new java.sql.Date(coupon.getEndDate().getTime()) + "', " + "AMOUNT=" + coupon.getAmount()
-				+ " WHERE ID=" + coupon.getId();
+		System.out.println("Activating couponDBDAO update coupon.");
+		String query = "UPDATE `coupon_project`.`coupon` SET"
+						+ " `START_DATE` = '" + new java.sql.Date(coupon.getStartDate().getTime()) + "'"
+						+ ", `END_DATE` = '" + new java.sql.Date(coupon.getEndDate().getTime()) + "'"
+						+ ", " + "`AMOUNT` = '" + coupon.getAmount() +"'"
+						+ ", " + "`TYPE` = '" + coupon.getType().name() + "'"
+						+ ", " + "`MESSAGE` = '" + coupon.getMessage() + "'"
+						+ ", " + "`PRICE` = '" + coupon.getPrice() + "'" 
+						+ ", " + "`IMAGE` = '" + coupon.getImage() + "'"
+						+ " WHERE `ID` = '" + coupon.getId() + "'";
+		
 		Connection connect = pool.getConnection();
 
 		try {
+			System.out.println("creating statement couponDBDAO update coupon.");
 			connect.createStatement().executeUpdate(query);
 		} catch (SQLException e) {
+			System.out.println("dropped sql exception couponDBDAO update coupon.");
+			System.out.println(e.getMessage());
 			throw new MyException(e.getMessage());
 		} finally {
 			if (connect != null)

@@ -54,10 +54,12 @@ public class CompanyFacade implements CouponClientFacade {
 	}
 
 	public void updateCoupon(Coupon coupon) throws MyException {
-		if (currentCompany == null) {
-			System.out.println("Not logged in, returning...");
-			return;
-		}
+		System.out.println("Entering update coupon in companyFacade.");
+//		if (currentCompany == null) {
+//			System.out.println("Not logged in, returning...");
+//			return;
+//		}
+		System.out.println("Reached updatecoupon in companyFacade");
 		couponData.updateCoupon(coupon);
 
 	}
