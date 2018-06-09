@@ -90,11 +90,13 @@ public class AdminFacade implements CouponClientFacade {
 	}
 
 	public void addCustomer(Customer customer) throws MyException {
-		if (customerData.getCustomer(customer.getId()) != null) {
-			System.out.println("Customer already exists...");
-			return;
+	
+		if (isLoggedIn) {
+			customerData.addCustomer(customer);
+		} else {
+			System.out.println("User not logged in...");
 		}
-		customerData.addCustomer(customer);
+		
 	}
 
 	public void deleteCustomer(long id) throws MyException {
