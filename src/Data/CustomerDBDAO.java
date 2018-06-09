@@ -80,7 +80,8 @@ public class CustomerDBDAO implements CustomerDAO {
 
 	@Override
 	public void updateCustomer(Customer customer) throws MyException {
-		String query = "UPDATE coupon_project.customer SET PASSWORD='" + customer.getPassword() + "' WHERE company.id = "+ customer.getId();
+		String query = "UPDATE coupon_project.customer SET PASSWORD='" 
+	+ customer.getPassword() + "' WHERE customer.id = "+ customer.getId();
 		Connection connect = pool.getConnection();
 		try {
 			int rowsChanged = connect.createStatement().executeUpdate(query);
