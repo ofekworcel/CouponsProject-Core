@@ -32,23 +32,17 @@ public class CustomerFacade implements CouponClientFacade {
 	}
 
 	public void purchaseCoupon(Coupon myCoupon) throws MyException {
-		if (this.currentCustomer != null) {
+		if (currentCustomer == null) {
 			System.out.println("Not logged in, returning...");
 			return;
 		}
-
-		if (couponData.getCoupon(myCoupon.getId()) != null) {
-			System.out.println("Coupon already exists...");
-			return;
-		}
-
 		couponData.addCoupon(myCoupon, currentCustomer);
 		couponData.buyCoupon(myCoupon.getId());
 
 	}
 
 	public Collection<Coupon> getAllPurchasedCoupons() throws MyException {
-		if (this.currentCustomer != null) {
+		if (currentCustomer == null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
@@ -60,7 +54,7 @@ public class CustomerFacade implements CouponClientFacade {
 	}
 
 	public ArrayList<Coupon> getAllPurchasedCouponsByType(CouponType type) throws MyException {
-		if (this.currentCustomer != null) {
+		if (currentCustomer == null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
@@ -79,7 +73,7 @@ public class CustomerFacade implements CouponClientFacade {
 	}
 
 	public ArrayList<Coupon> getAllPurchasedCouponsByPrice(double Price) throws MyException {
-		if (this.currentCustomer != null) {
+		if (currentCustomer == null) {
 			System.out.println("Not logged in, returning...");
 			return null;
 		}
@@ -108,6 +102,15 @@ public class CustomerFacade implements CouponClientFacade {
 	{
 		AdminFacade manager = new AdminFacade();
 		manager.addCustomer(customer);
+	}
+	
+	public Collection<Coupon> showAllCoupons() throws MyException
+	{
+		if (this.currentCustomer == null) {
+			System.out.println("Customer not logged in..");
+			return null;
+		}
+		return couponData.getAllCoupons();
 	}
 
 }
